@@ -43,6 +43,40 @@ def searchFile(query):
 #uploadFile('unnamed.jpg','unnamed.jpg','image/jpeg')
 #downloadFile('1Knxs5kRAMnoH5fivGeNsdrj_SIgLiqzV','google.jpg')
 #createFolder('Google')
-items=searchFile("'1moBoJF5VGtoY5Wf-dj8EXAON8QiLseQh' in parents")
+"""items=searchFile("'1moBoJF5VGtoY5Wf-dj8EXAON8QiLseQh' in parents")
 for item in items:
-    downloadFile(item['id'],'./gdownload/%s'%(item['name']))
+    downloadFile(item['id'],'./gdownload/%s'%(item['name']))"""
+
+
+def retaining_folder_structure(query,filepath):
+	results = DRIVE.files().list(fields="nextPageToken, files(id, name, kind, mimeType)",q=query).execute()
+	items = results.get('files', [])
+	for item in items:
+		print(item['name'])
+		if item['mimeType']=='application/vnd.google-apps.folder':
+			fold=item['name']
+			path=filepath+'/'+fold
+			if os.path.isdir(path):
+				retaining_folder_structure("'%s' in parents"%(item['id']),path)
+			else:
+				os.mkdir(path)
+				retaining_folder_structure("'%s' in parents"%(item['id']),path)
+		else:
+			request = DRIVE.files().get_media(fileId=item['id'])
+			fh = io.BytesIO()
+			downloader = MediaIoBaseDownload(fh, request)
+			done = False
+			while done is False:
+				status, done = downloader.next_chunk()
+				print("Download %d%%." % int(status.progress() * 100))
+			path=filepath+'/'+item['name']
+			#print(path)
+			with io.open(path,'wb') as f:
+				fh.seek(0)
+				f.write(fh.read())
+
+retaining_floder_structure("'1moBoJF5VGtoY5Wf-dj8EXAON8QiLseQh' in parents",'/home/dhanush/experiment')
+    
+
+
+
