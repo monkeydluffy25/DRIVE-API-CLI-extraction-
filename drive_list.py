@@ -75,7 +75,7 @@ def retaining_folder_structure(query,filepath):
 				fh.seek(0)
 				f.write(fh.read())
 
-retaining_floder_structure("'1moBoJF5VGtoY5Wf-dj8EXAON8QiLseQh' in parents",'/home/dhanush/experiment')
+retaining_folder_structure("'1moBoJF5VGtoY5Wf-dj8EXAON8QiLseQh' in parents",'/home/dhanush/experiment')
     
 
 
